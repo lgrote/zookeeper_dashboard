@@ -1,2 +1,4 @@
 *.py[co]
 cli_log.txt
+.project
+.pydevproject
