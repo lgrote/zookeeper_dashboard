@@ -50,6 +50,9 @@ class ZKClient(object):
 
     def get_acls(self, path):
         return zookeeper.get_acl(self.handle, path)
+    
+    def delete(self, path):
+        return zookeeper.delete(self.handle, path)
 
 ZOOKEEPER_SERVERS = getattr(settings,'ZOOKEEPER_SERVERS')
 
@@ -79,5 +82,12 @@ class ZNode(object):
                 if perms & PERM_ALL == PERM_ALL:
                     perms_list = ["PERM_ALL"]
                 acl['perm_list'] = perms_list
+        finally:
+            zk.close()
+            
+    def delete(self):
+        zk = ZKClient(ZOOKEEPER_SERVERS, TIMEOUT)
+        try:
+            zk.delete(self.path)
         finally:
             zk.close()

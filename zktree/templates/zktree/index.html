@@ -112,7 +112,14 @@
 				{% if znode.children %}
 				<table>
   					{% for child in znode.children %}
-  					<tr class="{% cycle 'oddrow' 'evenrow' %}"><td><a href="{{child|urlencode}}">{{child}}</a></td></tr>
+  					<tr class="{% cycle 'oddrow' 'evenrow' %}">
+  						<td><a href="{{child|urlencode}}">{{child}}</a></td>
+  						<td>
+  							{% if child != "zookeeper" and not isZKPath %}
+  							<a href="/tree/delete?path={{znode.path}}/{{child|urlencode}}" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+  							{% endif %}
+  						</td>
+  					</tr>
 					{% endfor %}
 				</table>
 				{% else %}
