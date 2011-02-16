@@ -87,6 +87,10 @@ class ZNode(object):
             zk.close()
             
     def delete(self):
+        if len(self.children) > 0:
+            for child in self.getExtendedChildren():
+                child.delete()
+                
         zk = ZKClient(ZOOKEEPER_SERVERS, TIMEOUT)
         try:
             zk.delete(self.path)
