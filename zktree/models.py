@@ -59,6 +59,7 @@ ZOOKEEPER_SERVERS = getattr(settings,'ZOOKEEPER_SERVERS')
 class ZNode(object):
     def __init__(self, path="/"):
         self.path = path
+        self.name = path.split('/')[-1]
         zk = ZKClient(ZOOKEEPER_SERVERS, TIMEOUT)
         try:
             self.data, self.stat = zk.get(path)
@@ -91,3 +92,15 @@ class ZNode(object):
             zk.delete(self.path)
         finally:
             zk.close()
+            
+    def getExtendedChildren(self):
+        basePath = self.path
+        if basePath != "/":
+            basePath += "/"
+        
+        
+        children = []
+        for child in self.children:
+            child = ZNode(basePath+child)
+            children.append(child)
+        return children
