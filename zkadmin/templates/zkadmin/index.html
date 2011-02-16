@@ -41,14 +41,53 @@
 			<div class="span-24 last section">
 				<h2>ZNode Tree</h2>
 
-				<a href="/tree">Root ZNode of the cluster</a>
+				<table>
+					<thead>
+						<tr>
+							<th>ZNode</th>
+							<th>Children</th>
+							<th>Size</th>
+							<th>Created</th>
+							<th>Modified</th>
+							<th>--</th>
+						</tr>
+					</thead>
+					<tbody>
+	  					<tr class="evenrow">
+	  						<td><a href="/tree">/</a></td>
+	  						<td>{{rootNode.children|length}}</td>
+	  						<td>{{rootNode.stat.dataLength}}</td>
+	  						<td>{{rootNode.stat.ctime|date:"Y-m-d H:i"}}</td>
+	  						<td>{{rootNode.stat.ctime|date:"Y-m-d H:i"}}</td>
+	  						<td>&nbsp;</td>
+	  					</tr>
+	  					{% for child in children %}
+	  					<tr class="{% cycle 'oddrow' 'evenrow' %}">
+	  						<td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/tree{{child.path|urlencode}}">{{child.path}}</a></td>
+	  						<td>{{child.children|length}}</td>
+	  						<td>{{child.stat.dataLength}}</td>
+	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
+	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
+	  						<td>
+	  							{% if child != "zookeeper" and not isZKPath %}
+	  							<a href="/tree/delete?path={{child.path|urlencode}}" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+	  							{% endif %}
+	  						</td>
+	  					</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
 			
 			<div class="span-24 last section">
 				<h2>Quota Definition</h2>
+				{% if quotaNode.data %}
+				<pre>{{quotaNode.data}}</pre>
+				{% else %}
+				<p>No Quota Defined</p>
+				{% endif %}
 				
-				<a href="/tree/zookeeper/quota">View Quota</a> - 
-				Information on the current quota configuration.
+				<a href="/tree/zookeeper/quota">More Information on the current quota configuration.</a> 
 			</div>
 
 			<div class="span-24 last small quiet section">

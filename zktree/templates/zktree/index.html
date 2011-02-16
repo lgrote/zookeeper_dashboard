@@ -114,6 +114,7 @@
 					<thead>
 						<tr>
 							<th>ZNode</th>
+							<th>Children</th>
 							<th>Size</th>
 							<th>Created</th>
 							<th>Modified</th>
@@ -124,6 +125,7 @@
 	  					{% for child in zchildren %}
 	  					<tr class="{% cycle 'oddrow' 'evenrow' %}">
 	  						<td><a href="/tree{{child.path|urlencode}}">{{child.name}}</a></td>
+	  						<td>{{child.children|length}}</td>
 	  						<td>{{child.stat.dataLength}}</td>
 	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
 	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
