@@ -25,6 +25,20 @@ Data({{znode.datatype}}) : {{znode.data}}
 </div>
 <hr/>
 <div class="span-24 last">
+<h2>Children ({{znode.stat.numChildren}})</h2>
+
+{% if znode.children %}
+<table>
+  {% for child in znode.children %}
+  <tr class="{% cycle 'oddrow' 'evenrow' %}"><td><a href="{{child|urlencode}}">{{child}}</a></td></tr>
+{% endfor %}
+</table>
+{% else %}
+No Children exist for this znode
+{% endif %}
+</div>
+
+<div class="span-24 last">
 <h2>Stat Information</h2>
 
 <table>
@@ -70,19 +84,7 @@ No ACLs exist for this znode
 <p>
 </div>
 <hr/>
-<div class="span-24 last">
-<h2>Children ({{znode.stat.numChildren}})</h2>
 
-{% if znode.children %}
-<table>
-  {% for child in znode.children %}
-  <tr class="{% cycle 'oddrow' 'evenrow' %}"><td><a href="{{child|urlencode}}">{{child}}</a></td></tr>
-{% endfor %}
-</table>
-{% else %}
-No Children exist for this znode
-{% endif %}
-</div>
 </div>
 
 </body> </html>
