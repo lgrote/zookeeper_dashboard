@@ -10,12 +10,20 @@ OP_ACCEPT = 16
 class Session(object):
     def __init__(self, session):
         m = re.search('/(\d+\.\d+\.\d+\.\d+):(\d+)\[(\d+)\]\((.*)\)', session)
-        self.host = m.group(1)
-        self.port = m.group(2)
-        self.interest_ops = m.group(3)
-        for d in m.group(4).split(","):
-            k,v = d.split("=")
-            self.__dict__[k] = v
+
+        if not m:
+            m = re.search('/([%\d:abcdef]+):(\d+)\[(\d+)\]\((.*)\)', session)
+            
+        if m:
+            self.host = m.group(1)
+            self.port = m.group(2)
+            self.interest_ops = m.group(3)
+            for d in m.group(4).split(","):
+                k,v = d.split("=")
+                self.__dict__[k] = v
+        else:
+            self.host = "%(session)s" %{'session':session}
+            self.port = 'na'
 
 class ZKServer(object):
     def __init__(self, server):
