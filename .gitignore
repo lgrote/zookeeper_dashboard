@@ -1,5 +1,7 @@
 *.py[co]
 cli_log.txt
-
 .DS_Store
 Icon.png
+.project
+.pydevproject
+

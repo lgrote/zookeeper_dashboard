@@ -50,12 +50,16 @@ class ZKClient(object):
 
     def get_acls(self, path):
         return zookeeper.get_acl(self.handle, path)
+    
+    def delete(self, path):
+        return zookeeper.delete(self.handle, path)
 
 ZOOKEEPER_SERVERS = getattr(settings,'ZOOKEEPER_SERVERS')
 
 class ZNode(object):
     def __init__(self, path="/"):
         self.path = path
+        self.name = path.split('/')[-1]
         zk = ZKClient(ZOOKEEPER_SERVERS, TIMEOUT)
         try:
             self.data, self.stat = zk.get(path)
@@ -81,3 +85,26 @@ class ZNode(object):
                 acl['perm_list'] = perms_list
         finally:
             zk.close()
+            
+    def delete(self):
+        if len(self.children) > 0:
+            for child in self.getExtendedChildren():
+                child.delete()
+                
+        zk = ZKClient(ZOOKEEPER_SERVERS, TIMEOUT)
+        try:
+            zk.delete(self.path)
+        finally:
+            zk.close()
+            
+    def getExtendedChildren(self):
+        basePath = self.path
+        if basePath != "/":
+            basePath += "/"
+        
+        
+        children = []
+        for child in self.children:
+            child = ZNode(basePath+child)
+            children.append(child)
+        return children

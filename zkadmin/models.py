@@ -9,6 +9,7 @@ OP_ACCEPT = 16
 
 class Session(object):
     def __init__(self, session):
+        #TODO: Support URLs, Not just IPs
         m = re.search('/(\d+\.\d+\.\d+\.\d+):(\d+)\[(\d+)\]\((.*)\)', session)
 
         if not m:
@@ -41,6 +42,7 @@ class ZKServer(object):
         line = sio.readline()
         m = re.search('.*: (\d+\.\d+\.\d+)-.*', line)
         self.version = m.group(1)
+        #Skip the clients line
         sio.readline()
         self.sessions = []
         for line in sio:

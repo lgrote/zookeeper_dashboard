@@ -1,5 +1,6 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 import string
+import traceback
 
 from zookeeper_dashboard.zktree.models import ZNode
 
@@ -22,7 +23,29 @@ def index(request, path=""):
             znode.datatype = "str"
 
         return render_to_response('zktree/index.html',
-                                  {'znode':znode})
+                                  {'znode':znode,
+                                   'isZKPath':str(znode.path).startswith("/zookeeper"),
+                                   'zchildren':znode.getExtendedChildren()})
+    except Exception as err:
+        tback = traceback.format_exc(err)
+        return render_to_response('zktree/error.html',
+                                  {'error':str(err),
+                                   'traceback':tback})
+
+def delete(request):
+    path = request.GET['path']
+    path = str(path).replace("//", '/')
+    try:
+        znode = ZNode(path)
+        znode.delete()
+        
+        sPath = path.split('/')[:-1]
+        toPath = '/'.join(sPath)
+        toPath = "/tree"+toPath
+        return redirect(toPath)
     except Exception as err:
         return render_to_response('zktree/error.html',
                                   {'error':str(err)})
+    
+    
+    
