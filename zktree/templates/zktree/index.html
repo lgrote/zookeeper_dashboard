@@ -24,6 +24,43 @@
 			</div>
 			
 			<div class="span-24 last section">
+							<h2>Children ({{znode.stat.numChildren}})</h2>
+							{% if znode.children %}
+							<table>
+								<thead>
+									<tr>
+										<th>ZNode</th>
+										<th>Children</th>
+										<th>Size</th>
+										<th>Created</th>
+										<th>Modified</th>
+										<th>--</th>
+									</tr>
+								</thead>
+								<tbody>
+				  					{% for child in zchildren %}
+				  					<tr class="{% cycle 'oddrow' 'evenrow' %}">
+				  						<td><a href="/tree{{child.path|urlencode}}">{{child.name}}</a></td>
+				  						<td>{{child.children|length}}</td>
+				  						<td>{{child.stat.dataLength}}</td>
+				  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
+				  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
+				  						<td>
+				  							{% if child.path != "zookeeper" and not isZKPath %}
+				  							<a href="/tree/delete?path={{child.path|urlencode}}" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+				  							{% endif %}
+				  						</td>
+				  					</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							{% else %}
+								No Children exist for this znode
+							{% endif %}
+						</div>
+
+
+			<div class="span-24 last section">
 				<h2>Stat Information</h2>
 
 				<table>
@@ -107,41 +144,6 @@
 				{% endif %}
 			</div>
 			
-			<div class="span-24 last section">
-				<h2>Children ({{znode.stat.numChildren}})</h2>
-				{% if znode.children %}
-				<table>
-					<thead>
-						<tr>
-							<th>ZNode</th>
-							<th>Children</th>
-							<th>Size</th>
-							<th>Created</th>
-							<th>Modified</th>
-							<th>--</th>
-						</tr>
-					</thead>
-					<tbody>
-	  					{% for child in zchildren %}
-	  					<tr class="{% cycle 'oddrow' 'evenrow' %}">
-	  						<td><a href="/tree{{child.path|urlencode}}">{{child.name}}</a></td>
-	  						<td>{{child.children|length}}</td>
-	  						<td>{{child.stat.dataLength}}</td>
-	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
-	  						<td>{{child.stat.ctime|date:"Y-m-d H:i"}}</td>
-	  						<td>
-	  							{% if child.path != "zookeeper" and not isZKPath %}
-	  							<a href="/tree/delete?path={{child.path|urlencode}}" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
-	  							{% endif %}
-	  						</td>
-	  					</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				{% else %}
-					No Children exist for this znode
-				{% endif %}
-			</div>
 		</div>
 	</body>
 </html>
